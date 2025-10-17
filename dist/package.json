@@ -8,7 +8,7 @@
     "build": "babel ./src -d dist --copy-files --ignore **/__tests__/** && npm run copy",
     "copy": "mkdir dist\\environments 2> NUL && copy src\\environments\\* dist\\environments\\ && copy package.json dist\\",
     "prod:local": "cross-env NODE_ENV=production node ./bin/www.js",
-    "prod": "NODE_ENV=production pm2 start bin/www --name api",
+    "prod": "NODE_ENV=production pm2 start bin/www.js --name api",
     "del": "pm2 delete api || true"
   },
   "dependencies": {
