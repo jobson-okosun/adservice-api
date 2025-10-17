@@ -1,0 +1,61 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+  
+      - name: Install SSH Key
+        uses:  shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: placeholder
+
+      - name: Adding Known Hosts
+        run: ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Delete existing api folder
+        run: ssh ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }} "rm -rf /root/apps/api/"
+
+      - name: Deploy with rsync
+        run: rsync -avz ./dist/ ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:/root/apps/api/
+
+      - name: Install dependencies
+        run: ssh ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }} "cd /root/apps/api && npm install"
+
+      - name: Restart server
+        uses: appleboy/ssh-action@master
+        with:
+          host:  ${{ secrets.SERVER_HOST }}
+          username:  ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /root/apps/api
+            npm run del
+            npm run prod
+            pm2 save
+            pm2 startup ubuntu
+            echo "Server restarted successfully."
+
+      - name: Restart Nginx
+        uses: appleboy/ssh-action@master
+        with:
+          host:  ${{ secrets.SERVER_HOST }}
+          username:  ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            sudo service nginx restart
