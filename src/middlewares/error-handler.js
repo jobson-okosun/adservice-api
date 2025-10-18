@@ -3,7 +3,7 @@ import { logger } from "../utils/helpers.js";
 
 export const errorHandler = (err, req, res, next) => {
   if (NODE_ENV === 'development') {
-    console.error(err);
+    // console.error(err);
   }
 
   const statusCode = err.statusCode || 500;

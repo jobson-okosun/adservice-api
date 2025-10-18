@@ -15,7 +15,6 @@ import { errorHandler } from './middlewares/error-handler.js';
 import corsOptions from './config/cors.config.js';
 import { timeZoneMap } from './config/timezone.config.js';
 import { eventLoader } from './loaders/events.js';
-import { getOrganizationData } from './controllers/app.controller.js';
 process.env.TZ = timeZoneMap[process.env.NODE_ENV] || 'UTC';
 var app = express();
 _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
@@ -37,11 +36,15 @@ app.use(express.urlencoded({
   extended: true
 }));
 app.use(cookieParser());
-app.use(cors({
-  origin: corsOptions.origin,
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH']
-}));
+app.use(function (req, res, next) {
+  cors({
+    origin: function origin(_origin, callback) {
+      return corsOptions.origin(_origin, callback, req);
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH']
+  })(req, res, next);
+});
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/booking', bookingRoutes);
