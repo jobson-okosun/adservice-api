@@ -33,7 +33,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/booking', bookingRoutes);
 app.use('/api/config', appRoutes);
-app.get('/health', (req, res) => res.json({ ok: true }));
+app.get('api/health', (req, res) => res.json({ ok: true }));
 
 app.use(errorHandler);
 

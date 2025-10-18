@@ -1,1 +1,0 @@
-export var USER_ROLES = ['USER', 'ADMIN'];
