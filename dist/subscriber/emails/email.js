@@ -31,7 +31,7 @@ export var sendUserEmailVerification = function sendUserEmailVerification() {
                 firstName: user.firstName,
                 appName: config.appName,
                 link: link,
-                configEmail: fromEmail
+                configEmail: config.email.customer
               }
             };
             emailData = prepareEmailData(payload);
@@ -71,7 +71,7 @@ export var sendUserForgotPassword = function sendUserForgotPassword() {
                 firstName: user.firstName,
                 appName: config.appName,
                 link: link,
-                configEmail: fromEmail
+                configEmail: config.email.customer
               }
             };
             emailData = prepareEmailData(payload);

@@ -17,7 +17,7 @@ export const sendUserEmailVerification = () => {
             toEmail: user.email,
             toName: user.firstName,
             subject: `Welcome to ${config.appName}! Please verify your email`,
-            variables: { firstName: user.firstName, appName: config.appName, link, configEmail: fromEmail }
+            variables: { firstName: user.firstName, appName: config.appName, link, configEmail: config.email.customer }
         };
 
         const emailData = prepareEmailData(payload);
@@ -38,7 +38,7 @@ export const sendUserForgotPassword = () => {
             toEmail: user.email,
             toName: user.firstName,
             subject: `Reset your ${config.appName} password`,
-            variables: { firstName: user.firstName, appName: config.appName, link, configEmail: fromEmail }
+            variables: { firstName: user.firstName, appName: config.appName, link, configEmail: config.email.customer }
         };
 
         const emailData = prepareEmailData(payload);
