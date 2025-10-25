@@ -21,11 +21,15 @@ const connectDB = async () => {
       logger.info('Disconnected from MongoDB');
     });
 
-    process.on('SIGINT', () => {
-      mongoose.connection.close(() => {
+    process.on('SIGINT', async () => {
+      try {
+        await mongoose.connection.close();
         logger.info('MongoDB connection closed due to application termination');
         process.exit(0);
-      });
+      } catch (err) {
+        logger.error(`Error closing MongoDB connection: ${err}`);
+        process.exit(1);
+      }
     });
 
   } catch (error) {
